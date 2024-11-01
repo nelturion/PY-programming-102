@@ -26,7 +26,7 @@ class CalculatorTestCase(unittest.TestCase):
 
     def test_division(self):
         self.assertEqual(calculator.divide(2, 2), 1.0)
-        self.assertEqual(calculator.divide(2, 0), "Делить на ноль можно, но только осторожно. Я не осторожный.")
+        self.assertEqual(calculator.divide(2, 0), "Делить на ноль нельзя")
         self.assertEqual(calculator.divide(0, 2), 0.0)
         self.assertEqual(calculator.divide(2, -2), -1.0)
         self.assertEqual(calculator.divide(-2, -2), 1.0)

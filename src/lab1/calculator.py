@@ -1,27 +1,31 @@
-def addition(x, y):
-    return float(x) + float(y)
+""" Основной код лабы №1 """
 
 
-def substracition(x, y):
-    return float(x) - float(y)
+def addition(first_arg, second_arg):
+    """Функция сложения"""
+    return float(first_arg) + float(second_arg)
 
 
-def multiply(x, y):
-    return float(x) * float(y)
+def substracition(first_arg, second_arg):
+    """Функция вычитания"""
+    return float(first_arg) - float(second_arg)
 
 
-def divide(x, y):
-    if float(y) == 0:
-        return "Делить на ноль можно, но только осторожно. Я не осторожный."
-    else:
-        return float(x) / float(y)
+def multiply(first_arg, second_arg):
+    """Функция умножения"""
+    return float(first_arg) * float(second_arg)
 
 
-if __name__ == '__main__':
+def divide(first_arg, second_arg):
+    """Функция деления"""
+    return "Делить на ноль нельзя" if float(second_arg) == 0 else float(first_arg) / float(second_arg)
+
+
+if __name__ == "__main__":
     a = int(input("Калькулятор Prostecki\nВведите первое число: "))
     b = int(input("Введите второе число: "))
     operation = input("Введите обозначение математической операции (+,-,*,/): ")
 
-    ops = {'+': addition, '-': substracition, '*': multiply, '/': divide}
+    ops = {"+": addition, "-": substracition, "*": multiply, "/": divide}
 
     print(ops[operation](a, b))
