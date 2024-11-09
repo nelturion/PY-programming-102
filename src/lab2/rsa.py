@@ -54,8 +54,27 @@ def multiplicative_inverse(e: int, phi: int) -> int:
     >>> multiplicative_inverse(7, 40)
     23
     """
-    # PUT YOUR CODE HERE
-    pass
+    # буквально следуем алгоритму из литературы
+    a = phi
+    b = e
+    amb = a % b
+    a_div_b = [a // b, ]
+    while amb != 0:
+        a = b
+        b = amb
+        amb = a % b
+        a_div_b.append(a // b)  # заполняем массив целых частей от деления A на B. он нам понадобится позже
+
+    del a_div_b[len(a_div_b) - 1]  # игнорируем последний элемент списка
+    a_div_b.reverse()  # разворачиваем список, чтобы обходить его с конца
+
+    x = 0
+    y = 1
+    for a_div_b_element in a_div_b:
+        x, y = y, x - y * a_div_b_element  # вычисляем обратный элемент (y)
+    d = y % phi  # получаем его значение принадлежащее {N}
+
+    return d
 
 
 def generate_keypair(p: int, q: int) -> tp.Tuple[tp.Tuple[int, int], tp.Tuple[int, int]]:
@@ -65,10 +84,10 @@ def generate_keypair(p: int, q: int) -> tp.Tuple[tp.Tuple[int, int], tp.Tuple[in
         raise ValueError("p and q cannot be equal")
 
     # n = pq
-    # PUT YOUR CODE HERE
+    n = p * q
 
-    # phi = (p-1)(q-1)
-    # PUT YOUR CODE HERE
+    # функция Эйлера
+    phi = (p-1) * (q-1)
 
     # Choose an integer e such that e and phi(n) are coprime
     e = random.randrange(1, phi)
