@@ -1,3 +1,4 @@
+import math
 import random
 import typing as tp
 
@@ -36,8 +37,14 @@ def gcd(a: int, b: int) -> int:
     >>> gcd(3, 7)
     1
     """
-    # PUT YOUR CODE HERE
-    pass
+    """ 
+    while a % b != 0:   # we can use this
+        c = a % b
+        a = b
+        b = c
+    return b
+    """
+    return math.gcd(a, b)   # or use inner math lib function
 
 
 def multiplicative_inverse(e: int, phi: int) -> int:
