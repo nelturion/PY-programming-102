@@ -1,0 +1,4 @@
+[FORMAT]
+max-line-length=120
+[BASIC]
+good-names=i, j, k, x, y, a, b, c, ex, Run, _

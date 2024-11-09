@@ -1,3 +1,6 @@
+"""
+Caesar encryption script. Solution for task 1 in lab 1.2
+"""
 import string
 
 
@@ -16,9 +19,9 @@ def encrypt_caesar(plaintext: str, shift: int = 3) -> str:
     ciphertext = ""
 
     # create alphabet of both upper and lower case letters
-    lower_chars = dict(enumerate([char for char in string.ascii_lowercase]))
+    lower_chars = dict(enumerate(list(string.ascii_lowercase)))
     inverted_lower_chars = {v: k for k, v in lower_chars.items()}
-    upper_chars = dict(enumerate([char for char in string.ascii_uppercase]))
+    upper_chars = dict(enumerate(list(string.ascii_uppercase)))
     inverted_upper_chars = {v: k for k, v in upper_chars.items()}
 
     list_of_numbers = []
@@ -31,25 +34,25 @@ def encrypt_caesar(plaintext: str, shift: int = 3) -> str:
         else:
             list_of_numbers.append(char)
 
-    nw = []
+    new_word = []
     for i in range(len(list_of_numbers)):
-        if type(list_of_numbers[i]) is int:
+        if isinstance(list_of_numbers[i], int):
             list_of_numbers[i] += shift  # shifting numbers [only if it is not a specific symbol!!!!]
             if list_of_numbers[i] > 25:
                 list_of_numbers[i] -= 26  # reducing number to stay inside alphabet length
 
         if plaintext[i].isupper() and not (plaintext[i].isnumeric() or plaintext[i] in string.punctuation):
-            nw.append(upper_chars[list_of_numbers[i]])
+            new_word.append(upper_chars[list_of_numbers[i]])
         elif plaintext[i].islower() and not (plaintext[i].isnumeric() or plaintext[i] in string.punctuation):
-            nw.append(lower_chars[list_of_numbers[i]])
+            new_word.append(lower_chars[list_of_numbers[i]])
         else:
-            nw.append(plaintext[i])
+            new_word.append(plaintext[i])
 
         # last operation breakdown: 1) it creates a new list of encoded word chars
         #                           2) operator "if" checks was character in upper case or lower case
         #                           3) correspondingly to p2 it appends the correct new character
         #                           to the end of a string
-    ciphertext = ''.join(nw)
+    ciphertext = "".join(new_word)
     return ciphertext
 
 
@@ -68,9 +71,9 @@ def decrypt_caesar(ciphertext: str, shift: int = 3) -> str:
     plaintext = ""
 
     # create alphabet of both upper and lower case letters
-    lower_chars = dict(enumerate([char for char in string.ascii_lowercase]))
+    lower_chars = dict(enumerate(list(string.ascii_lowercase)))
     inverted_lower_chars = {v: k for k, v in lower_chars.items()}
-    upper_chars = dict(enumerate([char for char in string.ascii_uppercase]))
+    upper_chars = dict(enumerate(list(string.ascii_uppercase)))
     inverted_upper_chars = {v: k for k, v in upper_chars.items()}
 
     list_of_numbers = []
@@ -83,25 +86,25 @@ def decrypt_caesar(ciphertext: str, shift: int = 3) -> str:
         else:
             list_of_numbers.append(char)
 
-    nw = []
+    new_word = []
     for i in range(len(list_of_numbers)):
-        if type(list_of_numbers[i]) is int:
+        if isinstance(list_of_numbers[i], int):
             list_of_numbers[i] -= shift  # shifting numbers [only if it is not a specific symbol!!!!]
             if list_of_numbers[i] < 0:
                 list_of_numbers[i] += 26  # reducing number to stay inside alphabet length
 
         if ciphertext[i].isupper() and not (ciphertext[i].isnumeric() or ciphertext[i] in string.punctuation):
-            nw.append(upper_chars[list_of_numbers[i]])
+            new_word.append(upper_chars[list_of_numbers[i]])
         elif ciphertext[i].islower() and not (ciphertext[i].isnumeric() or ciphertext[i] in string.punctuation):
-            nw.append(lower_chars[list_of_numbers[i]])
+            new_word.append(lower_chars[list_of_numbers[i]])
         else:
-            nw.append(ciphertext[i])
+            new_word.append(ciphertext[i])
 
         # last operation breakdown: 1) it creates a new list of encoded word chars
         #                           2) operator "if" checks was character in upper case or lower case
         #                           3) correspondingly to p2 it appends the correct new character
         #                           to the end of a string
-    plaintext = ''.join(nw)
+    plaintext = "".join(new_word)
 
     return plaintext
 
@@ -114,7 +117,11 @@ if __name__ == "__main__":
 
     # algorithm
     words = message.split()
-    print(' '.join(
-        [encrypt_caesar(word, shift) if mode == 'e' or mode == 'encrypt' else decrypt_caesar(word, shift) for word in
-         words])
+    print(
+        " ".join(
+            [
+                encrypt_caesar(word, shift) if mode == "e" or mode == "encrypt" else decrypt_caesar(word, shift)
+                for word in words
+            ]
+        )
     )

@@ -1,3 +1,7 @@
+"""
+This code implements methods of Vigenre encryption and decryption algorithm.
+А еще можно его протестить, если просто запустить модуль вручную. Вооооот...
+"""
 import string
 
 
@@ -16,9 +20,9 @@ def encrypt_vigenere(plaintext: str, keyword: str) -> str:
     ciphertext = ""
 
     # create alphabet of both upper and lower case letters
-    lower_chars = dict(enumerate([char for char in string.ascii_lowercase]))
+    lower_chars = dict(enumerate(list(string.ascii_lowercase)))
     inverted_lower_chars = {v: k for k, v in lower_chars.items()}
-    upper_chars = dict(enumerate([char for char in string.ascii_uppercase]))
+    upper_chars = dict(enumerate(list(string.ascii_uppercase)))
     inverted_upper_chars = {v: k for k, v in upper_chars.items()}
 
     key = full_and_even_key(plaintext, keyword)  # дополняем keyword до длины слова
@@ -30,11 +34,13 @@ def encrypt_vigenere(plaintext: str, keyword: str) -> str:
     # создаем массив в котором будут храниться алфавитные номера букв согласно алгоритму Виженера
     enc_letters_list = []
     for a, b in zip(word_letter_nums, key_letter_nums):  # итерируемся по индексам' из обоих списков КЛЮЧА и СЛОВА
-        enc_letters_list.append(str((int(a) + int(b)) % 26) if type(a) is str else (int(a) + int(b)) % 26)
+        enc_letters_list.append(
+            str((int(a) + int(b)) % 26) if isinstance(a, str) else (a + b) % 26
+        )
 
     # создаем строку из алфавитных номеров полученных символов
     ciphertext = "".join(
-        upper_chars[int(element)] if type(element) is str else lower_chars[element] for element in enc_letters_list
+        upper_chars[int(element)] if isinstance(element, str) else lower_chars[element] for element in enc_letters_list
     )
     return ciphertext
 
@@ -54,40 +60,48 @@ def decrypt_vigenere(ciphertext: str, keyword: str) -> str:
     plaintext = ""
 
     # create alphabet of both upper and lower case letters
-    lower_chars = dict(enumerate([char for char in string.ascii_lowercase]))
+    lower_chars = dict(enumerate(list(string.ascii_lowercase)))
     inverted_lower_chars = {v: k for k, v in lower_chars.items()}
-    upper_chars = dict(enumerate([char for char in string.ascii_uppercase]))
+    upper_chars = dict(enumerate(list(string.ascii_uppercase)))
     inverted_upper_chars = {v: k for k, v in upper_chars.items()}
 
     keyword = full_and_even_key(ciphertext, keyword)  # дополняем keyword до длины слова
 
     # получаем индексы букв КЛЮЧА и СЛОВА в алфавите
     key_letter_nums = [str(inverted_upper_chars[ch]) if ch.isupper() else inverted_lower_chars[ch] for ch in keyword]
-    word_letter_nums = [str(inverted_upper_chars[ch]) if ch.isupper() else inverted_lower_chars[ch] for ch in
-                        ciphertext]
+    word_letter_nums = [
+        str(inverted_upper_chars[ch]) if ch.isupper() else inverted_lower_chars[ch] for ch in ciphertext
+    ]
 
     # создаем массив в котором будут храниться алфавитные номера букв согласно алгоритму Виженера
     enc_letters_list = []
     for a, b in zip(word_letter_nums, key_letter_nums):
-        if type(a) is str:
+        if isinstance(a, str):
             a = int(a)
             b = int(b)
-            x = str(a - b if (a - b) >= 0 else 26 - abs(a - b))
+            x = str(a - b if a - b >= 0 else 26 - abs(a - b))
         else:
             # гугля, как можно было бы это реализовать по-другому, я пришел к идее использовать
             # отрицательный индекс для list(lower_chars.values()); реализовывать не стал.
-            x = (a - b if (a - b) >= 0 else 26 - abs(a - b))
+            x = a - b if a - b >= 0 else 26 - abs(a - b)
         enc_letters_list.append(x)
 
     # воссоздаем слово из алфавитных индексов его букв учитывая регистр
     plaintext = "".join(
-        upper_chars[int(element)] if type(element) is str else lower_chars[element] for element in enc_letters_list
+        upper_chars[int(element)] if isinstance(element, str) else lower_chars[element] for element in enc_letters_list
     )
 
     return plaintext
 
 
 def full_and_even_key(word, key):
+    """
+    This function is creating a new keyword from original keyword.
+    New keyword has the same length as a word for encryption.
+    F.e. we have CONSTITUTION (len == 12) as a plain/encrypted text
+    and          USA (len == 3) as a keyword
+    returns      USAUSAUSAUSA (len == 12)
+    """
     # fill keys to fit in word len (or make it a bit bigger)
     keyword = key
     while len(keyword) < len(word):
@@ -113,7 +127,7 @@ if __name__ == "__main__":
     # algorithm
     words = message.split()
 
-    if mode == "e" or mode == "encrypt":
+    if mode in ("e", "encrypt"):
         print(" ".join(encrypt_vigenere(word, keyword) for word in words))
     else:
         print(" ".join(decrypt_vigenere(word, keyword) for word in words))
