@@ -1,0 +1,102 @@
+import unittest
+from src.lab3 import sudoku as s
+
+
+class SudokuTestCase(unittest.TestCase):
+    def test_group(self):
+        # given
+        values = [1, 2, 3, 4]
+        values2 = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+        n = 2
+        n2 = 3
+        expected_result = [[1, 2], [3, 4]]
+        expected_result2 = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+
+        # when
+        result1 = s.group(values, n)
+        result2 = s.group(values2, n2)
+        # then
+        self.assertListEqual(result1, expected_result)
+        self.assertListEqual(result2, expected_result2)
+
+
+    def test_get_row(self):
+        #given
+        grid_sample1 = [['1', '2', '.'], ['4', '5', '6'], ['7', '8', '9']]
+        pos_sample1 = (0, 0)
+        expected_res1 = ['1', '2', '.']
+
+        grid_sample2 = [['1', '2', '3'], ['4', '.', '6'], ['7', '8', '9']]
+        pos_sample2 = (1, 0)
+        expected_res2 = ['4', '.', '6']
+
+        grid_sample3 = [['1', '2', '3'], ['4', '5', '6'], ['.', '8', '9']]
+        pos_sample3 = (2, 0)
+        expected_res3 = ['.', '8', '9']
+
+        grid_sample4 = [['1', '2', '.'], ['4', '5', '6'], ['7', '8', '9']]
+        pos_sample4 = (0, 2)
+        expected_res4 = ['1', '2', '.']
+
+        #when
+        res1 = s.get_row(grid_sample1, pos_sample1)
+        res2 = s.get_row(grid_sample2, pos_sample2)
+        res3 = s.get_row(grid_sample3, pos_sample3)
+        res4 = s.get_row(grid_sample4, pos_sample4)
+
+        #then
+        self.assertListEqual(res1, expected_res1)
+        self.assertListEqual(res2, expected_res2)
+        self.assertListEqual(res3, expected_res3)
+        self.assertListEqual(res4, expected_res4)
+
+    def test_get_col(self):
+        #given
+        grid_sample1 = [['1', '2', '.'], ['4', '5', '6'], ['7', '8', '9']]
+        pos_sample1 = (0, 0)
+        expected_res1 = ['1', '4', '7']
+
+        grid_sample2 = [['1', '2', '3'], ['4', '.', '6'], ['7', '8', '9']]
+        pos_sample2 = (0, 1)
+        expected_res2 = ['2', '.', '8']
+
+        grid_sample3 = [['1', '2', '3'], ['4', '5', '6'], ['.', '8', '9']]
+        pos_sample3 = (0, 2)
+        expected_res3 = ['3', '6', '9']
+
+        grid_sample4 = [['1', '2', '.'], ['4', '5', '6'], ['7', '8', '9']]
+        pos_sample4 = (1, 0)
+        expected_res4 = ['1', '4', '7']
+
+        #when
+        res1 = s.get_col(grid_sample1, pos_sample1)
+        res2 = s.get_col(grid_sample2, pos_sample2)
+        res3 = s.get_col(grid_sample3, pos_sample3)
+        res4 = s.get_col(grid_sample4, pos_sample4)
+
+        #then
+        self.assertListEqual(res1, expected_res1)
+        self.assertListEqual(res2, expected_res2)
+        self.assertListEqual(res3, expected_res3)
+        self.assertListEqual(res4, expected_res4)
+
+
+    def test_get_block(self):
+        # given
+        grid = s.read_sudoku('../../src/lab3/puzzle1.txt')
+        pos1 = (0, 1)
+        pos2 = (4, 7)
+        pos3 = (8, 8)
+        expected_res1 = ['5', '3', '.', '6', '.', '.', '.', '9', '8']
+        expected_res2 = ['.', '.', '3', '.', '.', '1', '.', '.', '6']
+        expected_res3 = ['2', '8', '.', '.', '.', '5', '.', '7', '9']
+
+        # when
+        res1 = s.get_block(grid, pos1)
+        res2 = s.get_block(grid, pos2)
+        res3 = s.get_block(grid, pos3)
+
+        # then
+        self.assertListEqual(res1, expected_res1)
+        self.assertListEqual(res2, expected_res2)
+        self.assertListEqual(res3, expected_res3)

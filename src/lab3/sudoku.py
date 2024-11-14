@@ -41,7 +41,10 @@ def group(values: tp.List[T], n: int) -> tp.List[tp.List[T]]:
     >>> group([1,2,3,4,5,6,7,8,9], 3)
     [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
     """
-    pass
+    res = []
+    for i in range(0, len(values), n):
+        res.append(values[i:i+n])
+    return res
 
 
 def get_row(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.List[str]:
@@ -52,8 +55,15 @@ def get_row(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.List[str
     ['4', '.', '6']
     >>> get_row([['1', '2', '3'], ['4', '5', '6'], ['.', '8', '9']], (2, 0))
     ['.', '8', '9']
+    >>> get_row([['1', '2', '.'],['4', '5', '6'],['7', '8', '9']], (0, 3))
+    ['1', '2', '.']
     """
-    pass
+    """                 [1, 2, .]
+     У нас есть поле:   [4, 5, 6]
+                        [7, 8, 9]
+    функция должна вернуть строку (row), на которую указывает координата pos(row, col) 
+    """
+    return grid[pos[0]]
 
 
 def get_col(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.List[str]:
@@ -65,7 +75,10 @@ def get_col(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.List[str
     >>> get_col([['1', '2', '3'], ['4', '5', '6'], ['.', '8', '9']], (0, 2))
     ['3', '6', '9']
     """
-    pass
+    col = []
+    for row in grid:
+        col.append(row[pos[1]])
+    return col
 
 
 def get_block(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.List[str]:
@@ -78,7 +91,14 @@ def get_block(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.List[s
     >>> get_block(grid, (8, 8))
     ['2', '8', '.', '.', '.', '5', '.', '7', '9']
     """
-    pass
+    top_left_pos = (pos[0] - (pos[0] % 3), pos[1] - (pos[1] % 3))
+    block_rows = [top_left_pos[0], top_left_pos[0] + 1, top_left_pos[0] + 2]
+    block_cols = [top_left_pos[1], top_left_pos[1] + 1, top_left_pos[1] + 2]
+    block_vals = []
+    for i in range(3):
+        for j in range(3):
+            block_vals.append(grid[block_rows[i]][block_cols[j]])
+    return block_vals
 
 
 def find_empty_positions(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.Tuple[int, int]]:
