@@ -100,3 +100,23 @@ class SudokuTestCase(unittest.TestCase):
         self.assertListEqual(res1, expected_res1)
         self.assertListEqual(res2, expected_res2)
         self.assertListEqual(res3, expected_res3)
+
+
+    def test_find_empty_positions(self):
+        # given
+        sample_grid1 = [['1', '2', '.'], ['4', '5', '6'], ['7', '8', '9']]
+        sample_grid2 = [['1', '2', '3'], ['4', '.', '6'], ['7', '8', '9']]
+        sample_grid3 = [['1', '2', '3'], ['4', '5', '6'], ['.', '8', '9']]
+        empty_pos1 = (0, 2)
+        empty_pos2 = (1, 1)
+        empty_pos3 = (2, 0)
+
+        # when
+        res1 = s.find_empty_positions(sample_grid1)
+        res2 = s.find_empty_positions(sample_grid2)
+        res3 = s.find_empty_positions(sample_grid3)
+
+        # then
+        self.assertTupleEqual(res1, empty_pos1)
+        self.assertTupleEqual(res2, empty_pos2)
+        self.assertTupleEqual(res3, empty_pos3)
