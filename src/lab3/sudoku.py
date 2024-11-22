@@ -154,56 +154,14 @@ def solve(grid: tp.List[tp.List[str]]) -> tp.List[tp.List[str]]:
     if check_solution(new_grid):
         return new_grid
     else:
-        solution = []
         empty = find_empty_positions(new_grid)
         possible = sorted(list(find_possible_values(new_grid, empty)))
-        print(possible, "___", empty)
         for variant in possible:
             new_grid[empty[0]][empty[1]] = variant
-            print(f"put {variant}, got")
-            display(new_grid)
-            solution = solve(new_grid)
-            #if check_solution(solution):
-            return solution
-            #else:
-            new_grid[empty[0]][empty[1]] = '.'
-            print("ooops... wrong assumption. returning to")
-            display(new_grid)
-                # solution = solve(new_grid)
-        # return solution if check_solution(solution) else solve(solution)
-        '''
-            new_grid = grid
+            solve(new_grid)
             if check_solution(new_grid):
-                display(new_grid)
                 return new_grid
-            else:
-                empty_pos = find_empty_positions(new_grid)
-                possibles = sorted(list(find_possible_values(new_grid, empty_pos)))
-                print(possibles, "___", empty_pos)
-                if len(possibles) > 0:
-                    for val in possibles:
-                        new_grid[empty_pos[0]][empty_pos[1]] = val
-                        print(f"put {val} got")
-                        display(new_grid)
-                        solve(new_grid)
-                else:
-                    # put . back for backtrace
-                    print("oops, backtracing to")
-                    new_grid[empty_pos[0]][empty_pos[1]] = '.'
-                    display(new_grid)
-        stackoverflow copy
-            new_grid = grid
-            i, j = find_empty_positions(grid)
-            if i == -1:
-                return grid
-            vals = sorted(list(find_possible_values(grid, (i, j))))
-            for val in vals:
-                new_grid[i][j] = val
-                if check_solution(new_grid):
-                    return new_grid
-                else:
-                    new_grid[i][j] = '.'
-        '''
+            new_grid[empty[0]][empty[1]] = '.'
 
 
 def check_solution(solution: tp.List[tp.List[str]]) -> bool:
@@ -262,32 +220,6 @@ def generate_sudoku(N: int) -> tp.List[tp.List[str]]:
 
 
 if __name__ == "__main__":
-    grid = read_sudoku("puzzle1.txt")
-    # display(grid)
-    solution = solve(grid)
-    display(solution)
-
-
-'''
-        if find_empty_positions(solution) is None:
-        for i in range(len(solution)):
-            column_set = set(get_col(solution, (i, i)))
-            if len(column_set) < 9:
-                return False     # Выходим из цикла, решение неправильное
-            row_set = set(get_col(solution, (i, i)))
-            if len(row_set) < 9:
-                return False
-
-        for i in range(0, len(solution), 3):
-            for j in range(0, len(solution[0]), 3):
-                block_set = set(get_block(solution, (i, j)))
-                if len(block_set) < 9:
-                    return False  # Выходим из цикла, решение неправильное
-    return True  # Нигде не возникло ошибок, так что все ок
-
-
-
-
     for fname in ["puzzle1.txt", "puzzle2.txt", "puzzle3.txt"]:
         grid = read_sudoku(fname)
         display(grid)
@@ -296,4 +228,3 @@ if __name__ == "__main__":
             print(f"Puzzle {fname} can't be solved")
         else:
             display(solution)
-'''
