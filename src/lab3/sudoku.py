@@ -1,5 +1,7 @@
 import pathlib
+import sys
 import typing as tp
+from typing import List
 
 T = tp.TypeVar("T")
 
@@ -43,7 +45,7 @@ def group(values: tp.List[T], n: int) -> tp.List[tp.List[T]]:
     """
     res = []
     for i in range(0, len(values), n):
-        res.append(values[i:i+n])
+        res.append(values[i:i + n])
     return res
 
 
@@ -109,11 +111,14 @@ def find_empty_positions(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.Tuple[in
     (1, 1)
     >>> find_empty_positions([['1', '2', '3'], ['4', '5', '6'], ['.', '8', '9']])
     (2, 0)
+    >>> find_empty_positions([['1', '2', '3'], ['4', '5', '6'], ['7', '8', '9']])
+    (-1, -1)
     """
     for i in range(len(grid)):
         for j in range(len(grid[0])):
             if grid[i][j] == ".":
                 return i, j
+    return -1, -1
 
 
 def find_possible_values(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.Set[str]:
@@ -126,12 +131,16 @@ def find_possible_values(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -
     >>> values == {'2', '5', '9'}
     True
     """
-    pass
+    possible_values = set([str(i) for i in range(1, 10)]).union(".")
+    possible_values = possible_values.difference(set(get_row(grid, pos)))
+    possible_values = possible_values.difference(set(get_col(grid, pos)))
+    possible_values = possible_values.difference(set(get_block(grid, pos)))
+    return possible_values
 
 
-def solve(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.List[tp.List[str]]]:
-    """ Решение пазла, заданного в grid """
-    """ Как решать Судоку?
+def solve(grid: tp.List[tp.List[str]]) -> tp.List[tp.List[str]]:
+    """ Решение пазла, заданного в grid
+        Как решать Судоку?
         1. Найти свободную позицию
         2. Найти все возможные значения, которые могут находиться на этой позиции
         3. Для каждого возможного значения:
@@ -141,13 +150,91 @@ def solve(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.List[tp.List[str]]]:
     >>> solve(grid)
     [['5', '3', '4', '6', '7', '8', '9', '1', '2'], ['6', '7', '2', '1', '9', '5', '3', '4', '8'], ['1', '9', '8', '3', '4', '2', '5', '6', '7'], ['8', '5', '9', '7', '6', '1', '4', '2', '3'], ['4', '2', '6', '8', '5', '3', '7', '9', '1'], ['7', '1', '3', '9', '2', '4', '8', '5', '6'], ['9', '6', '1', '5', '3', '7', '2', '8', '4'], ['2', '8', '7', '4', '1', '9', '6', '3', '5'], ['3', '4', '5', '2', '8', '6', '1', '7', '9']]
     """
-    pass
+    new_grid = grid
+    if check_solution(new_grid):
+        return new_grid
+    else:
+        solution = []
+        empty = find_empty_positions(new_grid)
+        possible = sorted(list(find_possible_values(new_grid, empty)))
+        print(possible, "___", empty)
+        for variant in possible:
+            new_grid[empty[0]][empty[1]] = variant
+            print(f"put {variant}, got")
+            display(new_grid)
+            solution = solve(new_grid)
+            #if check_solution(solution):
+            return solution
+            #else:
+            new_grid[empty[0]][empty[1]] = '.'
+            print("ooops... wrong assumption. returning to")
+            display(new_grid)
+                # solution = solve(new_grid)
+        # return solution if check_solution(solution) else solve(solution)
+        '''
+            new_grid = grid
+            if check_solution(new_grid):
+                display(new_grid)
+                return new_grid
+            else:
+                empty_pos = find_empty_positions(new_grid)
+                possibles = sorted(list(find_possible_values(new_grid, empty_pos)))
+                print(possibles, "___", empty_pos)
+                if len(possibles) > 0:
+                    for val in possibles:
+                        new_grid[empty_pos[0]][empty_pos[1]] = val
+                        print(f"put {val} got")
+                        display(new_grid)
+                        solve(new_grid)
+                else:
+                    # put . back for backtrace
+                    print("oops, backtracing to")
+                    new_grid[empty_pos[0]][empty_pos[1]] = '.'
+                    display(new_grid)
+        stackoverflow copy
+            new_grid = grid
+            i, j = find_empty_positions(grid)
+            if i == -1:
+                return grid
+            vals = sorted(list(find_possible_values(grid, (i, j))))
+            for val in vals:
+                new_grid[i][j] = val
+                if check_solution(new_grid):
+                    return new_grid
+                else:
+                    new_grid[i][j] = '.'
+        '''
 
 
 def check_solution(solution: tp.List[tp.List[str]]) -> bool:
-    """ Если решение solution верно, то вернуть True, в противном случае False """
-    # TODO: Add doctests with bad puzzles
-    pass
+    """ Если решение solution верно, то вернуть True, в противном случае False
+    >>> solution = [['5', '3', '4', '6', '7', '8', '9', '1', '2'], ['6', '7', '2', '1', '9', '5', '3', '4', '8'], ['1', '9', '8', '3', '4', '2', '5', '6', '7'], ['8', '5', '9', '7', '6', '1', '4', '2', '3'], ['4', '2', '6', '8', '5', '3', '7', '9', '1'], ['7', '1', '3', '9', '2', '4', '8', '5', '6'], ['9', '6', '1', '5', '3', '7', '2', '8', '4'], ['2', '8', '7', '4', '1', '9', '6', '3', '5'], ['3', '4', '5', '2', '8', '6', '1', '7', '9']]
+    >>> check_solution(solution)
+    True
+    >>> solution = [['5', '2', '4', '6', '7', '8', '9', '1', '2'], ['6', '7', '2', '1', '9', '5', '3', '4', '8'], ['1', '9', '8', '3', '4', '2', '5', '6', '7'], ['8', '5', '9', '7', '6', '1', '4', '2', '3'], ['4', '2', '6', '8', '5', '3', '7', '9', '1'], ['7', '1', '3', '9', '2', '4', '8', '5', '6'], ['9', '6', '1', '5', '3', '7', '2', '8', '4'], ['2', '8', '7', '4', '1', '9', '6', '3', '5'], ['3', '4', '5', '2', '8', '6', '1', '7', '9']]
+    >>> check_solution(solution)
+    False
+    """
+    # Проверяем количество различных цифр и наличие пустых ячеек
+    if find_empty_positions(solution) == (-1, -1):
+        for i in range(len(solution)):
+            column_set = set(get_col(solution, (i, i)))
+            if len(column_set) < 9:
+                return False  # колонка неправильная
+
+            row_set = set(get_row(solution, (i, i)))
+            if len(row_set) < 9:
+                return False  # строка неправильная
+
+        for i in range(0, len(solution), 3):
+            for j in range(0, len(solution[0]), 3):
+                block_set = set(get_block(solution, (i, j)))
+                if len(block_set) < 9:
+                    return False  # блок неправильный
+
+        return True  # Нигде не возникло ошибок, так что все ок
+    else:
+        return False  # где-то нашли '.'
 
 
 def generate_sudoku(N: int) -> tp.List[tp.List[str]]:
@@ -175,6 +262,32 @@ def generate_sudoku(N: int) -> tp.List[tp.List[str]]:
 
 
 if __name__ == "__main__":
+    grid = read_sudoku("puzzle1.txt")
+    # display(grid)
+    solution = solve(grid)
+    display(solution)
+
+
+'''
+        if find_empty_positions(solution) is None:
+        for i in range(len(solution)):
+            column_set = set(get_col(solution, (i, i)))
+            if len(column_set) < 9:
+                return False     # Выходим из цикла, решение неправильное
+            row_set = set(get_col(solution, (i, i)))
+            if len(row_set) < 9:
+                return False
+
+        for i in range(0, len(solution), 3):
+            for j in range(0, len(solution[0]), 3):
+                block_set = set(get_block(solution, (i, j)))
+                if len(block_set) < 9:
+                    return False  # Выходим из цикла, решение неправильное
+    return True  # Нигде не возникло ошибок, так что все ок
+
+
+
+
     for fname in ["puzzle1.txt", "puzzle2.txt", "puzzle3.txt"]:
         grid = read_sudoku(fname)
         display(grid)
@@ -183,3 +296,4 @@ if __name__ == "__main__":
             print(f"Puzzle {fname} can't be solved")
         else:
             display(solution)
+'''
