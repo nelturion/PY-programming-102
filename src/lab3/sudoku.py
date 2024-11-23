@@ -1,5 +1,9 @@
+import multiprocessing
 import pathlib
+import random
 import sys
+import threading
+import time
 import typing as tp
 from typing import List
 
@@ -138,7 +142,7 @@ def find_possible_values(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -
     return possible_values
 
 
-def solve(grid: tp.List[tp.List[str]]) -> tp.List[tp.List[str]]:
+def solve(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.List[tp.List[str]]] | bool:
     """ Решение пазла, заданного в grid
         Как решать Судоку?
         1. Найти свободную позицию
@@ -162,6 +166,7 @@ def solve(grid: tp.List[tp.List[str]]) -> tp.List[tp.List[str]]:
             if check_solution(new_grid):
                 return new_grid
             new_grid[empty[0]][empty[1]] = '.'
+        return False
 
 
 def check_solution(solution: tp.List[tp.List[str]]) -> bool:
@@ -216,11 +221,106 @@ def generate_sudoku(N: int) -> tp.List[tp.List[str]]:
     >>> check_solution(solution)
     True
     """
-    pass
+
+    def transposing(grid: list[list[str]]) -> list[list[str]]:
+        """ Transposing the whole grid """
+        grid = [[grid[j][i] for j in range(len(grid))] for i in range(len(grid[0]))]
+        return grid
+
+    def swap_rows_small(grid: list[list[str]]) -> list[list[str]]:
+        """ Swap the two rows """
+        # получение случайного района и случайной строки
+        n = 3
+        area = random.randrange(0, n, 1)  # area - это 3 блока
+        line1 = random.randrange(0, n, 1)
+
+        N1 = area * n + line1  # номер 1 строки для обмена
+
+        line2 = random.randrange(0, n, 1)
+        while line1 == line2:
+            line2 = random.randrange(0, n, 1)
+
+        N2 = area * n + line2  # номер 2 строки для обмена
+
+        grid[N1], grid[N2] = grid[N2], grid[N1]
+        return grid
+
+    def swap_cols_small(grid: list[list[str]]) -> list[list[str]]:
+        grid = transposing(grid)
+        grid = swap_rows_small(grid)
+        grid = transposing(grid)
+        return grid
+
+    def swap_rows_area(grid: list[list[str]]) -> list[list[str]]:
+        area1 = random.randint(0, 2)  # индекс областей, которые хотим поменять местами
+        area2 = random.randint(0, 2)
+        while area2 == area1:
+            area2 = random.randint(0, 2)
+
+        for i in range(0, 3):
+            N1, N2 = area1 * 3 + i, area2 * 3 + i  # построчно меняем местами области
+            grid[N1], grid[N2] = grid[N2], grid[N1]
+        return grid
+
+    def swap_cols_area(grid: list[list[str]]) -> list[list[str]]:
+        grid = transposing(grid)
+        grid = swap_rows_area(grid)
+        grid = transposing(grid)
+        return grid
+
+    def shuffle(grid: list[list[str]], swaps=10) -> list[list[str]]:
+        shuffle_functions = [transposing,
+                             swap_rows_area,
+                             swap_cols_area,
+                             swap_cols_small,
+                             swap_rows_small]
+        for i in range(swaps):
+            id_func = random.choice(shuffle_functions)
+            grid = id_func(grid)
+        return grid
+
+    def dot(grid: list[list[str]], N: int) -> list[list[str]]:
+        for i in range(81 - N):
+            pos = (random.randint(0, 8), random.randint(0, 8))
+            while grid[pos[0]][pos[1]] == '.':
+                pos = (random.randint(0, 8), random.randint(0, 8))
+            grid[pos[0]][pos[1]] = '.'
+        return grid
+
+    n = 3
+    grid = [[((i * n + i // n + j) % (n * n) + 1) for j in range(n * n)] for i in range(n * n)]
+    grid = shuffle(grid)
+    grid = dot(grid, N)
+    return grid
+
+
+def run_solve(filename: str):
+    """
+    Sudoku solver with timer. Used for multithread solution
+    """
+    grid = read_sudoku(filename)
+    start = time.time()
+    solve(grid)
+    end = time.time()
+    print(f"{filename}: {end - start}\n")
 
 
 if __name__ == "__main__":
+    grid = read_sudoku("unsolvable_generated.txt")
+    display(grid)
+    sol = solve(grid)
+    for filename in ("puzzle1.txt", "puzzle2.txt", "puzzle3.txt"):
+        p = multiprocessing.Process(target=run_solve, args=(filename,))
+        p.start()
+    time.sleep(10)
+    for filename in ("puzzle1.txt", "puzzle2.txt", "puzzle3.txt"):
+        t = threading.Thread(target=run_solve, args=(filename,))
+        t.start()
+
+'''
+if __name__ == "__main__":
     for fname in ["puzzle1.txt", "puzzle2.txt", "puzzle3.txt"]:
+        start = time.time()
         grid = read_sudoku(fname)
         display(grid)
         solution = solve(grid)
@@ -228,3 +328,6 @@ if __name__ == "__main__":
             print(f"Puzzle {fname} can't be solved")
         else:
             display(solution)
+        end = time.time()
+        print("solving time: ", end-start)
+'''
