@@ -8,13 +8,13 @@ import string
 def encrypt_vigenere(plaintext: str, keyword: str) -> str:
     """
     Encrypts plaintext using a Vigenere cipher.
-    #>>> encrypt_vigenere("PYTHON", "A")
+    >>> encrypt_vigenere("PYTHON", "A")
     'PYTHON'
-    #>>> encrypt_vigenere("python", "a")
+    >>> encrypt_vigenere("python", "a")
     'python'
-    #>>> encrypt_vigenere("ATTACKATDAWN", "LEMON")
-    'LXFOPVEFRNHR'
-    #>>> encrypt_vigenere("AttackAtDawn", "lemon")
+    >>> encrypt_vigenere("AT TACKATDAWN", "LEMON")
+    'LX FOPVEFRNHR'
+    >>> encrypt_vigenere("AttackAtDawn", "lemon")
     'LxfopvEfRnhr'
     """
     ciphertext = ""
@@ -22,8 +22,13 @@ def encrypt_vigenere(plaintext: str, keyword: str) -> str:
     # create alphabet of both upper and lower case letters
     lower_chars = dict(enumerate(list(string.ascii_lowercase)))
     inverted_lower_chars = {v: k for k, v in lower_chars.items()}
+    inverted_lower_chars[" "] = " "
     upper_chars = dict(enumerate(list(string.ascii_uppercase)))
     inverted_upper_chars = {v: k for k, v in upper_chars.items()}
+    inverted_upper_chars[" "] = " "
+
+    symbols = list(string.punctuation)
+    symbols.append(" ")
 
     key = full_and_even_key(plaintext, keyword)  # дополняем keyword до длины слова
 
@@ -33,15 +38,38 @@ def encrypt_vigenere(plaintext: str, keyword: str) -> str:
 
     # создаем массив в котором будут храниться алфавитные номера букв согласно алгоритму Виженера
     enc_letters_list = []
-    for a, b in zip(word_letter_nums, key_letter_nums):  # итерируемся по индексам' из обоих списков КЛЮЧА и СЛОВА
+    b = 0
+    for a in word_letter_nums:
+        if a in symbols:
+            enc_letters_list.append(a)
+        else:
+            enc_letters_list.append(
+                str((int(a) + int(key_letter_nums[b])) % 26) if isinstance(a, str) else (a + key_letter_nums[b]) % 26
+            )
+            b += 1
+    '''for a, b in zip(word_letter_nums, key_letter_nums):  # итерируемся по индексам из обоих списков КЛЮЧА и СЛОВА
         enc_letters_list.append(
             str((int(a) + int(b)) % 26) if isinstance(a, str) else (a + b) % 26
         )
+    '''
+
+    # enc_letters_list == "2", 2, " ", "12", 3, 5...
+    w = []
+    for i in range(len(enc_letters_list)):
+        if isinstance(enc_letters_list[i], str):
+            if enc_letters_list[i].isnumeric():
+                w.append(upper_chars[int(enc_letters_list[i])])
+            else:
+                w.append(enc_letters_list[i])
+        else:
+            w.append(lower_chars[enc_letters_list[i]])
+    ciphertext = "".join(w)
 
     # создаем строку из алфавитных номеров полученных символов
-    ciphertext = "".join(
-        upper_chars[int(element)] if isinstance(element, str) else lower_chars[element] for element in enc_letters_list
+    '''ciphertext = "".join(
+        upper_chars[int(element)] if isinstance(element, str) else lower_chars[element]  for element in enc_letters_list
     )
+    '''
     return ciphertext
 
 
