@@ -19,7 +19,8 @@ if __name__ == "__main__":
         file.write(s)
 
     # create new user with his (this program's) own instance of Recommendation_System(based on his history)
-    my_feeder = Recommendation_System(user=User(generate_new_id(), new_user_history, "GoodTragedian"))
+    my_feeder = Recommendation_System(User(generate_new_id(), new_user_history, "GoodTragedian"),
+                                      "../resources/txt/watch_history.txt")
 
     # generate recommendation
     movie_id = my_feeder.get_next_recommendation(0)

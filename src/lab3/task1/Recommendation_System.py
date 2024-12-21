@@ -4,6 +4,13 @@ from src.lab3.task1 import User
 
 
 class Recommendation_System(User.User):
+    def __init__(self, user: User.User, history_file: str | list[list[int]]):
+        super().__init__(user.get_id(), user.get_history())
+        if isinstance(history_file, str):
+            self.__users = self.__user_assignment(history_file)
+        elif isinstance(history_file, list):
+            self.__users = history_file
+
     @staticmethod
     def __user_assignment(history_file: str) -> list[User.User]:
         users = []
@@ -21,7 +28,7 @@ class Recommendation_System(User.User):
         Check whether the histories are similar (similar interests?)
         Заданной будем считать hist1. Сравниваем заданную с чужой.
         >>> test_user = User.User(1,[])
-        >>> test_feed = Recommendation_System(test_user)
+        >>> test_feed = Recommendation_System(test_user, "../resources/txt/watch_history.txt")
         >>> test_feed.is_similar([1,2,3,2,1], [3,2,7,6])
         True
         >>> test_feed.is_similar([],[])
@@ -48,13 +55,9 @@ class Recommendation_System(User.User):
         else:
             return False
 
-    def __init__(self, user: User.User):
-        super().__init__(user.get_id(), user.get_history())
-        self.__users = self.__user_assignment("../resources/txt/watch_history.txt")
-
     def get_similar_by_history(self, userlist: list[User.User]) -> list[User.User]:
         '''
-        Возвращает список юзеров с  похожими историями просмотров
+        Возвращает список юзеров с похожими историями просмотров
         '''
         similars = []
         for user in userlist:
@@ -62,17 +65,17 @@ class Recommendation_System(User.User):
                 similars.append(user)
         return similars
 
-    def exclude_viewed(self) -> list[list[int]]:
+    def exclude_viewed(self, similar_users: list[User.User]) -> list[list[int]]:
         '''
         Возвращает истории без повторений просмотров
         '''
-        similars = self.get_similar_by_history(self.__users)  # 1.берем похожих
-        new_similars = []
+        similars = similar_users  #self.get_similar_by_history(self.__users)  # 1.берем похожих
+        suggestions = []
         for user in similars:
             # а что из списка просмотренного user-ами наш челик не посмотрел?
             new_sim = list(set(user.get_history()).difference(set(self.get_history())))  # 2.исключаем
-            new_similars.append(new_sim)
-        return new_similars
+            suggestions.append(new_sim)
+        return suggestions
 
     @staticmethod
     def sort_by_most_viewed_from_list(watch_list: list[list[int]]) -> list[int]:
@@ -90,7 +93,7 @@ class Recommendation_System(User.User):
         '''
         Генерирует рекомендацию основываясь на похожих историях юзеров
         '''
-        similars = self.exclude_viewed()
+        similars = self.exclude_viewed(self.get_similar_by_history(self.__users))
         return self.sort_by_most_viewed_from_list(similars)
 
     def get_next_recommendation(self, recommendation_cntr: int) -> int:
