@@ -1,5 +1,5 @@
 import unittest
-from src.lab2 import caesar as c
+from src.lab1_2 import caesar as c
 
 
 class CalculatorTestCase(unittest.TestCase):
