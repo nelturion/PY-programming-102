@@ -4,7 +4,7 @@ from src.lab3.task1 import User
 
 
 class Recommendation_System(User.User):
-    def __init__(self, user: User.User, history_file: str | list[list[int]]):
+    def __init__(self, user: User.User, history_file: str | list[list[int]] = "../resources/txt/watch_history.txt"):
         super().__init__(user.get_id(), user.get_history())
         if isinstance(history_file, str):
             self.__users = self.__user_assignment(history_file)

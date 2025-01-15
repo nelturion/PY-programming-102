@@ -5,7 +5,7 @@ from src.lab3.task1.User import User
 
 class test_task1(unittest.TestCase):
     def test_isSimilar(self):
-        test_feed = Recommendation_System(User(1, []), "../../src/lab3/resources/txt/watch_history.txt")
+        test_feed = Recommendation_System(User(1, []), [[1,2,3,4], [1,2,3,4,5,6,7,8,9]])
 
         history1 = [1, 2, 3, 4]
         history2 = [1, 2, 3, 4, 5, 6, 7, 8, 9]
