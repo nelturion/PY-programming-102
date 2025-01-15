@@ -1,6 +1,6 @@
 import math
 import unittest
-from src.lab2 import rsa
+from src.lab1_2 import rsa
 
 
 class CalculatorTestCase(unittest.TestCase):
