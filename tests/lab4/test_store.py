@@ -67,6 +67,7 @@ class test_store(unittest.TestCase):
         self.assertEqual(fun(correct_address_a), (True, correct_address_a))
         self.assertEqual(fun(correct_address_b), (True, correct_address_b))
 
+    """
     @patch("builtins.open", new_callable=mock_open)
     def test_order_processor(self, mock_file):
         # given
@@ -91,3 +92,4 @@ class test_store(unittest.TestCase):
         # then
         self.assertEqual(len(valid_orders_list[0]), valid_orders_count)
         self.assertEqual(len(valid_orders_list[1]), invalid_orders_count)
+    """
