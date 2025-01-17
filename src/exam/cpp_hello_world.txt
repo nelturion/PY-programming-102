@@ -1,0 +1,14 @@
+#include<iostream>
+#include<stdlib.h>
+
+using namespace std;
+
+int main() {
+    // one line comment
+    /*
+    multiline comment string 1
+    multiline comment string 2
+    */
+    cout << /* some inline comment */ "Hello world!";
+    return 0;
+}
