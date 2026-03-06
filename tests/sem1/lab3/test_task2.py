@@ -1,7 +1,7 @@
 import unittest
 
-from src.lab3.task2.Group import Group
-from src.lab3.task2.Person import Person
+from src.sem1.lab3.task2.Group import Group
+from src.sem1.lab3.task2.Person import Person
 
 
 class test_task1(unittest.TestCase):

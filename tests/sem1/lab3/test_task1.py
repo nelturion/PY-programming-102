@@ -1,6 +1,6 @@
 import unittest
-from src.lab3.task1.Recommendation_System import Recommendation_System
-from src.lab3.task1.User import User
+from src.sem1.lab3.task1.Recommendation_System import Recommendation_System
+from src.sem1.lab3.task1.User import User
 
 
 class test_task1(unittest.TestCase):

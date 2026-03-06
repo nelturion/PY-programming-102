@@ -1,5 +1,5 @@
 import unittest
-from src.lab1_2 import vigenre as v
+from src.sem1.lab1_2 import vigenre as v
 
 
 class CalculatorTestCase(unittest.TestCase):

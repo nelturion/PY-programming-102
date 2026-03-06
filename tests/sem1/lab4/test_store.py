@@ -1,8 +1,6 @@
 import unittest
-from unittest.mock import mock_open
-from unittest.mock import patch
 
-import src.lab4.store as store
+import src.sem1.lab4.store as store
 
 
 class test_store(unittest.TestCase):

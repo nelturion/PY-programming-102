@@ -1,4 +1,4 @@
-from src.lab3.task2.Person import Person
+from src.sem1.lab3.task2.Person import Person
 
 
 class Group:

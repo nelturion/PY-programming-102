@@ -1,5 +1,5 @@
 import unittest
-from src.lab2 import sudoku as s
+from src.sem1.lab2 import sudoku as s
 
 
 class SudokuTestCase(unittest.TestCase):

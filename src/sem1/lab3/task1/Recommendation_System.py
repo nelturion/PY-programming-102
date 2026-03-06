@@ -1,6 +1,6 @@
 import math
 
-from src.lab3.task1 import User
+from src.sem1.lab3.task1 import User
 
 
 class Recommendation_System(User.User):

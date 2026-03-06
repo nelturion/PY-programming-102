@@ -1,5 +1,5 @@
 import unittest
-from src.lab1 import calculator
+from src.sem1.lab1 import calculator
 
 
 class CalculatorTestCase(unittest.TestCase):
