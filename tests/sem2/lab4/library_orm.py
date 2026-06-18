@@ -1,7 +1,4 @@
 import unittest
-from datetime import date
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 
 # Импортируем модели, функции, engine, Base из основного файла
 from src.sem2.lab4.library_orm import Base, User, Book, Booking, add_user, add_book, create_booking, delete_booking, SessionLocal, engine
